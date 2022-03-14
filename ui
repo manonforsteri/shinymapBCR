@@ -1,0 +1,44 @@
+#
+# This is the user-interface definition of a Shiny web application. You can
+# run the application by clicking 'Run App' above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+library(shiny)
+library(shinydashboard)
+
+# Define UI for application that draws a histogram
+ui <- dashboardPage(
+  dashboardHeader(title="Cartographie"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("Lecture des données", tabName = "readData", icon = icon("readme")),
+      menuItem("Visualisation des données", tabName = "visualization", icon = icon("poll"))
+    )
+    
+  ),
+  dashboardBody(
+    tabItems(
+      # Read data
+      tabItem(tabName = "readData",
+              h1("Lecture des données"),
+              fileInput("dataFile",label = NULL, 
+                        buttonLabel = "Browse...",
+                        placeholder = "No file selected"),
+              h3("File preview"),
+              dataTableOutput(outputId = "preview")
+
+      ),
+      
+      # visualization
+      tabItem(tabName = "visualization",
+              h1("Visualisation des données")
+      )
+    )
+    
+    
+  )
+)
