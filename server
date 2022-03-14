@@ -29,14 +29,14 @@ server <- function(input, output, session) {
     df <- read.csv(input$dataFile$datapath,
                    header = TRUE,
                    sep = ";",
-                   dec=".",
+                   dec=",",
                    nrows=10
     )
   },  options = list(scrollX = TRUE , dom = 't'))
   
   
   
-  #Lecture des donnÃ©es
+  #Lecture des donnees
   
   observeEvent(input$actBtnVisualisation, {
     
@@ -44,7 +44,7 @@ server <- function(input, output, session) {
       data$table = read.csv(input$dataFile$datapath,
                             header = TRUE,
                             sep = ";",
-                            dec=".")
+                            dec=",")
       sendSweetAlert(
         session = session,
         title = "Done !",
@@ -57,4 +57,18 @@ server <- function(input, output, session) {
     
   })
   
+  #Visualisaiton des données 
+
+  
+  output$dataTable = DT::renderDataTable(data$table)
+  
+  #Traçage de la carte (ici un graph pour test avec nos datas)
+  output$plotAvecR <- renderPlot({
+    plot(as.numeric(data$table$LP),as.numeric(data$table$MA),
+         main = "Longueur d'aile vs Masse",
+         ylab = "Longueur d'aile",
+         xlab = "Masse",
+         xlim=c(0,100), ylim=c(0,100))
+  })
+
   }
