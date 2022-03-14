@@ -61,11 +61,13 @@ ui <- dashboardPage(
       
       #Cartographie
       tabItem(tabName = "Mapping",
-              h1("Cartographie")
+              h1("Cartographie"),
+              fluidRow(
+                column(10,plotOutput("plotAvecR") )
+              )
       )
-      
+      )
     )
     
     
   )
-)
