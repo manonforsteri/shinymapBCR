@@ -7,36 +7,63 @@
 #    http://shiny.rstudio.com/
 #
 
+
+# install.packages("anyLib")
+# anyLib::anyLib(c("shiny", "shinydashboard", "shinyWidgets", "DT", "plotly", "ggplot2", "googleVis", "colourpicker"))
+library(shinyWidgets)
 library(shiny)
 library(shinydashboard)
+library(DT)
+
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
   dashboardHeader(title="Cartographie"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Lecture des données", tabName = "readData", icon = icon("readme")),
-      menuItem("Visualisation des données", tabName = "visualization", icon = icon("poll"))
+      menuItem("Lecture des donnees", tabName = "readData", icon = icon("readme")),
+      menuItem("Visualisation des donnees", tabName = "visualization", icon = icon("poll")),
+      menuItem("Selection des donnees", tabName = "Selection", icon = icon("poll")),
+      menuItem("Cartographie", tabName = "Mapping", icon = icon("poll"))
     )
     
   ),
   dashboardBody(
+    
     tabItems(
       # Read data
       tabItem(tabName = "readData",
-              h1("Lecture des données"),
+              h1("Lecture des donnees"),
               fileInput("dataFile",label = NULL, 
                         buttonLabel = "Browse...",
                         placeholder = "No file selected"),
+              
+              tags$br(),
+              div(actionButton(inputId = "actBtnVisualisation", label = "Le tableau est correct",icon = icon("play") ), align = "center"),
+              
               h3("File preview"),
               dataTableOutput(outputId = "preview")
 
       ),
+    
       
       # visualization
       tabItem(tabName = "visualization",
-              h1("Visualisation des données")
+              h1("Visualisation des donnees"),
+              h2("Exploration du tableau"),
+              dataTableOutput('dataTable')
+      ),
+
+      #Selection
+      tabItem(tabName = "Selection",
+              h1("Selection des donnees")
+      ),
+      
+      #Cartographie
+      tabItem(tabName = "Mapping",
+              h1("Cartographie")
       )
+      
     )
     
     
