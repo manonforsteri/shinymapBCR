@@ -7,14 +7,15 @@
 #    http://shiny.rstudio.com/
 #
 
-
+# install.packages('rsconnect')
 # install.packages("anyLib")
 # anyLib::anyLib(c("shiny", "shinydashboard", "shinyWidgets", "DT", "plotly", "ggplot2", "googleVis", "colourpicker"))
 library(shinyWidgets)
 library(shiny)
 library(shinydashboard)
 library(DT)
-
+library(birdring)
+library(rsconnect)
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
