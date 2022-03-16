@@ -19,7 +19,7 @@ server <- function(input, output, session) {
   data <- reactiveValues()
   
   
-  #PrÃ©visualisation
+  #PrÃÂ©visualisation
   output$preview <-  renderDataTable({
     
     req(input$dataFile)
@@ -45,10 +45,11 @@ server <- function(input, output, session) {
                             header = TRUE,
                             sep = ";",
                             dec=",")
+      
       sendSweetAlert(
         session = session,
         title = "Done !",
-        text = "Le fichier a bien été lu !",
+        text = "Le fichier a bien Ã©tÃ© lu !",
         type = "success"
       )
       
@@ -57,18 +58,28 @@ server <- function(input, output, session) {
     
   })
   
-  #Visualisaiton des données 
+  #Visualisaiton des donnÃ©es 
 
   
   output$dataTable = DT::renderDataTable(data$table)
   
-  #Traçage de la carte (ici un graph pour test avec nos datas)
+  #TraÃ§age de la carte (ici un graph pour test avec nos datas)
+  
   output$plotAvecR <- renderPlot({
-    plot(as.numeric(data$table$LP),as.numeric(data$table$MA),
-         main = "Longueur d'aile vs Masse",
-         ylab = "Longueur d'aile",
-         xlab = "Masse",
-         xlim=c(0,100), ylim=c(0,100))
+    data$table$lat<-data$table$LAT
+    data$table$lon<-data$table$LON
+    data$table$metal.ring.info[data$table$ACTION=="B"]<-1
+    data$table$metal.ring.info[data$table$ACTION=="C"]<-4
+    data$table$metal.ring.info[data$table$ACTION=="R"]<-4
+    data$table$ring<-data$table$BAGUE
+    data$table$scheme<-data$table$CENTRE
+    bird_recapt<-as.data.frame(table(data$table$BAGUE))
+    bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
+    data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+    draw.recmap(data$table, points=1, lines=1, pcol="black", lcol="red",
+                mercator=TRUE, bbox=c(-20, 40, 0, 70),
+                projection= "mercator", border= "gray")
+
   })
 
   }
