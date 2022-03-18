@@ -25,7 +25,8 @@ ui <- dashboardPage(
       menuItem("Lecture des donnees", tabName = "readData", icon = icon("readme")),
       menuItem("Visualisation des donnees", tabName = "visualization", icon = icon("poll")),
       menuItem("Selection des donnees", tabName = "Selection", icon = icon("poll")),
-      menuItem("Cartographie", tabName = "Mapping", icon = icon("poll"))
+      menuItem("Cartographie", tabName = "Mapping", icon = icon("poll")),
+      menuItem("References", tabName = "Ref", icon = icon("poll"))
     )
     
   ),
@@ -36,13 +37,14 @@ ui <- dashboardPage(
       tabItem(tabName = "readData",
               h1("Lecture des donnees"),
               fileInput("dataFile",label = NULL, 
-                        buttonLabel = "Browse...",
-                        placeholder = "No file selected"),
+                        buttonLabel = "Importer...",
+                        placeholder = "Pas de fichier selectionne"),
               
               tags$br(),
+              h5("Verifiez que les donnees sont bien importees puis validez"),
               div(actionButton(inputId = "actBtnVisualisation", label = "Le tableau est correct",icon = icon("play") ), align = "center"),
               
-              h3("File preview"),
+              h3("Apercu des 10 premieres donnees"),
               dataTableOutput(outputId = "preview")
 
       ),
@@ -66,6 +68,15 @@ ui <- dashboardPage(
               fluidRow(
                 column(10,plotOutput("plotAvecR") )
               )
+      ),
+     
+       #References
+       tabItem(tabName = "Ref",
+                      h1("References"),
+                      h5("Cette application a ete realisee par Milena Caire et Manon Ghislain"),
+                      h5("Contact : milena.cairo1@mnhn.fr et manon.ghislain@mnhn.fr"),
+                      h5("Reference au package")
+
       )
       )
     )
