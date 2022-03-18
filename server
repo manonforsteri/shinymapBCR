@@ -19,24 +19,35 @@ server <- function(input, output, session) {
   data <- reactiveValues()
   
   
-  #PrÃÂ©visualisation
+  #Previsualisation
   output$preview <-  renderDataTable({
     
     req(input$dataFile)
    
-    #A FAIRE : LUI DIRE DE MONTRER UNIQUEMENT LES COLONNES QUI NOUS INTERESSENT
-    #(La c'est encore un peu brouillon^^)
     df <- read.csv(input$dataFile$datapath,
                    header = TRUE,
                    sep = ";",
                    dec=",",
-                   nrows=10
-    )
-  },  options = list(scrollX = TRUE , dom = 't'))
+                   nrows=10,
+                   colClasses = c(PREC.DATE = "NULL",HEURE = "NULL", DEPT = "NULL",
+                                  PAYS = "NULL", Dept.en.clair = "NULL", 
+                                  LP = "NULL", MA = "NULL", AD = "NULL",THEME.SESSION = "NULL",
+                                  THEME = "NULL", BAGUEUR = "NULL", BG = "NULL",
+                                  COND.REPR = "NULL", CIRC.REPR = "NULL", MEMO.SESSION = "NULL",
+                                  MEMO = "NULL", FS = "NULL", HS = "NULL",
+                                  DS = "NULL", GE = "NULL", RE = "NULL",
+                                  MI = "NULL", Leurre = "NULL", LP.Droite = "NULL",
+                                  NF = "NULL", BC = "NULL", CS = "NULL",
+                                  CA = "NULL", PC = "NULL", PI = "NULL",
+                                  TL = "NULL", TQ = "NULL", REFERENCE = "NULL",
+                                  DECRIT_COMME = "NULL", Nom.scientifique = "NULL", Nom.vernaculaire = "NULL")
+    )[1:11]
+  },  options = list(scrollX = TRUE ,scrollY = TRUE , dom = 't'))
   
   
   
   #Lecture des donnees
+  #AJOUTER UN SCROLL HORIZONTAL
   
   observeEvent(input$actBtnVisualisation, {
     
@@ -61,11 +72,12 @@ server <- function(input, output, session) {
   #Visualisaiton des donnÃ©es 
 
   
-  output$dataTable = DT::renderDataTable(data$table)
+  output$dataTable = DT::renderDataTable(data$table,  options = list(scrollX = TRUE ,scrollY = TRUE , dom = 't'))
   
   #TraÃ§age de la carte (ici un graph pour test avec nos datas)
   
   output$plotAvecR <- renderPlot({
+    #Modif des donnees
     data$table$lat<-data$table$LAT
     data$table$lon<-data$table$LON
     data$table$metal.ring.info[data$table$ACTION=="B"]<-1
@@ -76,9 +88,19 @@ server <- function(input, output, session) {
     bird_recapt<-as.data.frame(table(data$table$BAGUE))
     bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
     data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+    
+    #Recadrage automatique de la carte
+    minlat<-min(data$table$lat)-5
+    maxlat<-max(data$table$lat)+5
+    minlon<-min(data$table$lon)-5
+    maxlon<-max(data$table$lon)+5
+    
+    #tracage de la carte
     draw.recmap(data$table, points=1, lines=1, pcol="black", lcol="red",
-                mercator=TRUE, bbox=c(-20, 40, 0, 70),
-                projection= "mercator", border= "gray")
+                mercator=TRUE,
+                projection= "mercator", border= "gray", 
+                bbox=c(min(data$table$lon)-5, max(data$table$lon)+5,
+                       min(data$table$lat)-5,max(data$table$lat)+5))
 
   })
 
