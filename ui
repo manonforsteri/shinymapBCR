@@ -1,4 +1,10 @@
 #
+#POUR DEPLOYER APPLICATION EN LIGNE
+
+# setwd("~/CARTOBCR")
+# rsconnect::deployApp("CARTOBCR")
+
+
 # This is the user-interface definition of a Shiny web application. You can
 # run the application by clicking 'Run App' above.
 #
@@ -41,10 +47,12 @@ ui <- dashboardPage(
                         placeholder = "Pas de fichier selectionne"),
               
               tags$br(),
-              h5("Verifiez que les donnees sont bien importees puis validez"),
-              div(actionButton(inputId = "actBtnVisualisation", label = "Le tableau est correct",icon = icon("play") ), align = "center"),
+              h5("1 - Importez votre ficher de donnees extrait par le CRBPO"),
+              h5("2 - Verifiez que les donnees sont bien importees dans l apercu si-dessous"),
+              h5("3 - Si tout vous semble correct, validez avec le bouton ci-dessous"),
+              div(actionButton(inputId = "actBtnVisualisation", label = "Le tableau est correct",icon = icon("play") )),
               
-              h3("Apercu des 10 premieres donnees"),
+              h3("Apercu des 10 premieres lignes"),
               dataTableOutput(outputId = "preview")
 
       ),
@@ -63,14 +71,16 @@ ui <- dashboardPage(
       ),
       
       #Cartographie
+      #rappel des filtres selectionnes 
       tabItem(tabName = "Mapping",
               h1("Cartographie"),
               fluidRow(
-                column(10,plotOutput("plotAvecR") )
+                column(10,plotOutput("plotAvecR",width = "100%", height = "800px") )
               )
       ),
      
        #References
+      #CHERCHER COMMENT CREER UN LIEN
        tabItem(tabName = "Ref",
                       h1("References"),
                       h5("Cette application a ete realisee par Milena Caire et Manon Ghislain"),
