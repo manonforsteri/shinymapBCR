@@ -69,10 +69,11 @@ server <- function(input, output, session) {
     
   })
   
-  #Visualisaiton des donnÃ©es 
-
+  #Visualisation des donnees 
+  #BUG  LE TITRE DES COLONNES NE SUIT PAS QUAND ON SCROLE DE GAUCHE A DROITE
+  #BUG  Le bidule Search n a pas l air de marcher
   
-  output$dataTable = DT::renderDataTable(data$table,  options = list(scrollX = TRUE ,scrollY = TRUE , dom = 't'))
+  output$dataTable = DT::renderDataTable(data$table,  options = list(scrollY = TRUE))
   
   #TraÃ§age de la carte (ici un graph pour test avec nos datas)
   
