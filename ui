@@ -1,8 +1,8 @@
 #
 #POUR DEPLOYER APPLICATION EN LIGNE
-
+# 
 # setwd("~/CARTOBCR")
-# rsconnect::deployApp("CARTOBCR")
+#  rsconnect::deployApp("CARTOBCR")
 
 
 # This is the user-interface definition of a Shiny web application. You can
@@ -22,6 +22,7 @@ library(shinydashboard)
 library(DT)
 library(birdring)
 library(rsconnect)
+library(ggplot2)
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
@@ -47,7 +48,7 @@ ui <- dashboardPage(
                         placeholder = "Pas de fichier selectionne"),
               
               tags$br(),
-              h5("1 - Importez votre ficher de donnees extrait par le CRBPO"),
+              h5("1 - Importez votre ficher de donnees extrait par le CRBPO et converti en .CVS"),
               h5("2 - Verifiez que les donnees sont bien importees dans l apercu si-dessous"),
               h5("3 - Si tout vous semble correct, validez avec le bouton ci-dessous"),
               div(actionButton(inputId = "actBtnVisualisation", label = "Le tableau est correct",icon = icon("play") )),
@@ -74,8 +75,11 @@ ui <- dashboardPage(
       #rappel des filtres selectionnes 
       tabItem(tabName = "Mapping",
               h1("Cartographie"),
+              h6("la carte va s'afficher dans quelques secondes"),
+              h5("Rappel des parametres annee site espece"),
+              downloadButton("downloadPlot", "Telecharger carte"),
               fluidRow(
-                column(10,plotOutput("plotAvecR",width = "100%", height = "800px") )
+                column(10,plotOutput("plotAvecR",width = "100%", height = "600px") )
               )
       ),
      
@@ -83,7 +87,7 @@ ui <- dashboardPage(
       #CHERCHER COMMENT CREER UN LIEN
        tabItem(tabName = "Ref",
                       h1("References"),
-                      h5("Cette application a ete realisee par Milena Caire et Manon Ghislain"),
+                      h5("Cette application a ete realisee par Milena Cairo et Manon Ghislain"),
                       h5("Contact : milena.cairo1@mnhn.fr et manon.ghislain@mnhn.fr"),
                       h5("Reference au package")
 
