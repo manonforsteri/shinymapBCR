@@ -23,7 +23,7 @@ server <- function(input, output, session) {
   output$preview <-  renderDataTable({
     
     req(input$dataFile)
-   
+  #Rmq on pouvait importer du xls ce serait encore mieux 
     df <- read.csv(input$dataFile$datapath,
                    header = TRUE,
                    sep = ";",
@@ -71,16 +71,17 @@ server <- function(input, output, session) {
   
   #Visualisation des donnees 
   #BUG  LE TITRE DES COLONNES NE SUIT PAS QUAND ON SCROLE DE GAUCHE A DROITE
+  #peut etre simplifier l affichage comme dans la previsualisation
   #BUG  Le bidule Search n a pas l air de marcher
   
   output$dataTable = DT::renderDataTable(data$table,  options = list(scrollY = TRUE))
   
-  #TraÃ§age de la carte (ici un graph pour test avec nos datas)
+  #TraÃ§age de la carte 
   
   output$plotAvecR <- renderPlot({
     #Modif des donnees
-    data$table$lat<-data$table$LAT
-    data$table$lon<-data$table$LON
+    data$table$lat<-as.numeric(data$table$LAT)
+    data$table$lon<-as.numeric(data$table$LON)
     data$table$metal.ring.info[data$table$ACTION=="B"]<-1
     data$table$metal.ring.info[data$table$ACTION=="C"]<-4
     data$table$metal.ring.info[data$table$ACTION=="R"]<-4
@@ -104,5 +105,27 @@ server <- function(input, output, session) {
                        min(data$table$lat)-5,max(data$table$lat)+5))
 
   })
+  
+  #coder dans le file name annee especes et 3 premieres lettre du site
 
-  }
+  output$downloadPlot <- downloadHandler(
+    filename = function() { paste("carte", '.png', sep='') },
+    content = function(file) {
+      png(file, 
+          width = (max(data$table$lat)-min(data$table$lat))*100 , 
+          height = (max(data$table$lon)-min(data$table$lon))*100 , 
+          units = "px", pointsize = 20,
+               bg = "white", res = NA)
+      print(draw.recmap(data$table, points=1, lines=1, pcol="black", lcol="red",
+                        mercator=TRUE, 
+                        projection= "mercator", border= "gray", 
+                        bbox=c(min(data$table$lon)-5, max(data$table$lon)+5,
+                               min(data$table$lat)-5,max(data$table$lat)+5)))
+      dev.off()
+    })
+  
+
+}
+
+
+
