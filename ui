@@ -66,9 +66,20 @@ ui <- dashboardPage(
               dataTableOutput('dataTable')
       ),
 
-      #Selection
+      #Selection #CETTE PARTIE NE FONCTIONNE PAS JE NE SAIS PAS COMMENT IMPORTER LES NOMS DES ESPECES
       tabItem(tabName = "Selection",
-              h1("Selection des donnees")
+              h1("Selection des donnees"),
+              checkboxGroupInput("checkGroup", 
+                                 h3("Choix des annees"), 
+                                 choices = list("Choice 1" = 1, 
+                                                "Choice 2" = 2, 
+                                                "Choice 3" = 3),
+                                 selected = 10),
+              checkboxGroupInput("checkGroup",
+                                 h3("Choix des especes"),
+                               # choices =  names(sp)) ,
+                                 selected = 10)
+  
       ),
       
       #Cartographie
