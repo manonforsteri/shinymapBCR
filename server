@@ -47,7 +47,6 @@ server <- function(input, output, session) {
   
   
   #Lecture des donnees
-  #AJOUTER UN SCROLL HORIZONTAL
   
   observeEvent(input$actBtnVisualisation, {
     
@@ -77,7 +76,7 @@ server <- function(input, output, session) {
   output$dataTable = DT::renderDataTable(data$table,  options = list(scrollY = TRUE))
   
   #TraÃ§age de la carte 
-  
+
   output$plotAvecR <- renderPlot({
     #Modif des donnees
     data$table$lat<-as.numeric(data$table$LAT)
@@ -91,6 +90,9 @@ server <- function(input, output, session) {
     bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
     data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
     
+    #Selection des donnees
+   
+                      
     #Recadrage automatique de la carte
     minlat<-min(data$table$lat)-5
     maxlat<-max(data$table$lat)+5
