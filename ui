@@ -1,8 +1,8 @@
 #
 #POUR DEPLOYER APPLICATION EN LIGNE
 # 
-# setwd("~/CARTOBCR")
-#  rsconnect::deployApp("CARTOBCR")
+setwd("~/CARTOBCR")
+ rsconnect::deployApp("CARTOBCR")
 
 
 # This is the user-interface definition of a Shiny web application. You can
@@ -48,8 +48,8 @@ ui <- dashboardPage(
                         placeholder = "Pas de fichier selectionne"),
               
               tags$br(),
-              h5("1 - Importez votre ficher de donnees extrait par le CRBPO et converti en .CVS"),
-              h5("2 - Verifiez que les donnees sont bien importees dans l apercu si-dessous"),
+              h5("1 - Importez votre ficher de donnees extrait par le CRBPO et converti en .csv"),
+              h5("2 - Verifiez que les donnees sont bien importees dans l apercu ci-dessous"),
               h5("3 - Si tout vous semble correct, validez avec le bouton ci-dessous"),
               div(actionButton(inputId = "actBtnVisualisation", label = "Le tableau est correct",icon = icon("play") )),
               
@@ -66,28 +66,38 @@ ui <- dashboardPage(
               dataTableOutput('dataTable')
       ),
 
-      #Selection #CETTE PARTIE NE FONCTIONNE PAS JE NE SAIS PAS COMMENT IMPORTER LES NOMS DES ESPECES
+      #Selection 
       tabItem(tabName = "Selection",
               h1("Selection des donnees"),
-              checkboxGroupInput("checkGroup", 
-                                 h3("Choix des annees"), 
-                                 choices = list("Choice 1" = 1, 
-                                                "Choice 2" = 2, 
-                                                "Choice 3" = 3),
-                                 selected = 10),
-              checkboxGroupInput("checkGroup",
-                                 h3("Choix des especes"),
-                               # choices =  names(sp)) ,
-                                 selected = 10)
-  
+
+              h3("Choix des especes"),
+              selectInput("subsetType", "",
+                          
+                c("Toutes les especes" = "all",
+                  "Certaines especes" = "specific"),
+                selected = "all"),
+              # which espece to show
+              conditionalPanel(
+                "input.subsetType == 'specific'",
+                uiOutput("spTypeUi")
+              ), #br(),
+              
+              # button to update the data
+              #shiny::hr(),
+              actionButton("updateBtn", "Valider la selection"),
+              h3("Pour annuler les filtres selectionnes"),
+              div(actionButton(inputId = "actBtnreinitialisation", label = "Reinitialisation" ))
+              
       ),
       
+
+      
       #Cartographie
-      #rappel des filtres selectionnes 
       tabItem(tabName = "Mapping",
+      #rappel des filtres selectionnes 
               h1("Cartographie"),
               h6("la carte va s'afficher dans quelques secondes"),
-              h5("Rappel des parametres annee site espece"),
+            #  h5("Rappel des parametres annee site espece"),
               downloadButton("downloadPlot", "Telecharger carte"),
               fluidRow(
                 column(10,plotOutput("plotAvecR",width = "100%", height = "600px") )
@@ -98,13 +108,14 @@ ui <- dashboardPage(
       #CHERCHER COMMENT CREER UN LIEN
        tabItem(tabName = "Ref",
                       h1("References"),
-                      h5("Cette application a ete realisee par Milena Cairo et Manon Ghislain"),
-                      h5("Contact : milena.cairo1@mnhn.fr et manon.ghislain@mnhn.fr"),
-                      h5("Reference au package")
+                      h5("Cette application a ete realisee Manon Ghislain"),
+                      h5("Contact : manon.ghislain@mnhn.fr"),
+                      h5("La cartographie repose sur le R package birdring, Korner Nievergelt et Robinson, 2014 ")
+                      
 
       )
       )
     )
+)
     
-    
-  )
+
