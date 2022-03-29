@@ -81,7 +81,60 @@ server <- function(input, output, session) {
   
   
   #Selection des donnees
-  # Create select box input for choosing cancer types
+  
+  #choix des sites de capture
+  output$siteTypeUi <- renderUI({
+    data$table$lat<-as.numeric(data$table$LAT)
+    data$table$lon<-as.numeric(data$table$LON)
+    data$table$metal.ring.info[data$table$ACTION=="B"]<-1
+    data$table$metal.ring.info[data$table$ACTION=="C"]<-4
+    data$table$metal.ring.info[data$table$ACTION=="R"]<-4
+    data$table$ring<-data$table$BAGUE
+    data$table$scheme<-data$table$CENTRE
+    bird_recapt<-as.data.frame(table(data$table$BAGUE))
+    bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
+    data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+    
+    
+    selectizeInput("siteType", "",
+                   names(sort(table(data$table$LIEUDIT), decreasing=TRUE)),
+                   selected = NULL, multiple = TRUE,
+                   options = list(placeholder = "Choisir vos sites de capture"))
+    
+    
+  })
+  
+  #choix des annees
+  output$anTypeUi <- renderUI({
+    data$table$lat<-as.numeric(data$table$LAT)
+    data$table$lon<-as.numeric(data$table$LON)
+    data$table$metal.ring.info[data$table$ACTION=="B"]<-1
+    data$table$metal.ring.info[data$table$ACTION=="C"]<-4
+    data$table$metal.ring.info[data$table$ACTION=="R"]<-4
+    data$table$ring<-data$table$BAGUE
+    data$table$scheme<-data$table$CENTRE
+    bird_recapt<-as.data.frame(table(data$table$BAGUE))
+    bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
+    data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+
+    if(input$subsetType2 == "site" & !is.null(input$siteType)) {
+      BAGUEsite<-data$table$BAGUE[data$table$LIEUDIT %in% input$siteType]
+      data$table<-data$table[which(data$table$BAGUE %in% BAGUEsite),]
+    }
+    
+    
+    data$table$ANNEE<-substr(data$table$DATE, 7,10)
+    
+    selectizeInput("anType", "",
+                   unique(data$table$ANNEE),
+                   selected = NULL, multiple = TRUE,
+                   options = list(placeholder = "Choisir les annees"))
+    
+    
+  })
+  
+  
+  # Create select box input for choosing species types
   output$spTypeUi <- renderUI({
     data$table$lat<-as.numeric(data$table$LAT)
     data$table$lon<-as.numeric(data$table$LON)
@@ -94,6 +147,15 @@ server <- function(input, output, session) {
     bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
     data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
     
+    if(input$subsetType2 == "site" & !is.null(input$siteType)) {
+      BAGUEsite<-data$table$BAGUE[data$table$LIEUDIT %in% input$siteType]
+      data$table<-data$table[which(data$table$BAGUE %in% BAGUEsite),]
+    }
+    
+    if(input$subsetType3 == "an" & !is.null(input$anType)) {
+      BAGUEan<-data$table$BAGUE[data$table$ANNEE %in% input$anType]
+      data$table<-data$table[which(data$table$BAGUE %in% BAGUEan),]
+    }
     
     selectizeInput("spType", "",
                    unique(data$table$ESPECE),
@@ -120,6 +182,7 @@ server <- function(input, output, session) {
       bird_recapt<-as.data.frame(table(data$table$BAGUE))
       bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
       data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+      
       
       selectizeInput("spType", "",
                      unique(data$table$ESPECE),
@@ -158,11 +221,21 @@ server <- function(input, output, session) {
     bird_recapt<-as.data.frame(table(data$table$BAGUE))
     bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
     data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+
+    if(input$subsetType2 == "site" & !is.null(input$siteType)) {
+      BAGUEsite<-data$table$BAGUE[data$table$LIEUDIT %in% input$siteType]
+      data$table<-data$table[which(data$table$BAGUE %in% BAGUEsite),]
+    }
+    
+    if(input$subsetType3 == "an" & !is.null(input$anType)) {
+      BAGUEan<-data$table$BAGUE[data$table$ANNEE %in% input$anType]
+      data$table<-data$table[which(data$table$BAGUE %in% BAGUEan),]
+    }
     
     if (input$subsetType == "specific" & !is.null(input$spType)) {
       data$table<-data$table[which(data$table$ESPECE %in% input$spType),]
     }
-    
+
     
     #tracage de la carte
    
@@ -193,6 +266,16 @@ server <- function(input, output, session) {
       bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
       data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
       
+      if(input$subsetType2 == "site" & !is.null(input$siteType)) {
+        BAGUEsite<-data$table$BAGUE[data$table$LIEUDIT %in% input$siteType]
+        data$table<-data$table[which(data$table$BAGUE %in% BAGUEsite),]
+      }
+      
+      if(input$subsetType3 == "an" & !is.null(input$anType)) {
+        BAGUEan<-data$table$BAGUE[data$table$ANNEE %in% input$anType]
+        data$table<-data$table[which(data$table$BAGUE %in% BAGUEan),]
+      }
+      
       if (input$subsetType == "specific" & !is.null(input$spType)) {
         data$table<-data$table[which(data$table$ESPECE %in% input$spType),]
       }
@@ -210,7 +293,55 @@ server <- function(input, output, session) {
       dev.off()
     })
 
-
+  #TELECHARGEMENT SANS LES FRONTIERES
+  output$downloadPlot2 <- downloadHandler(
+    filename = function() { paste("cartesansfrontieres", '.png', sep='') },
+    content = function(file) {
+      data$table$lat<-as.numeric(data$table$LAT)
+      data$table$lon<-as.numeric(data$table$LON)
+      data$table$metal.ring.info[data$table$ACTION=="B"]<-1
+      data$table$metal.ring.info[data$table$ACTION=="C"]<-4
+      data$table$metal.ring.info[data$table$ACTION=="R"]<-4
+      data$table$ring<-data$table$BAGUE
+      data$table$scheme<-data$table$CENTRE
+      bird_recapt<-as.data.frame(table(data$table$BAGUE))
+      bird_recapt2<-bird_recapt[which(bird_recapt$Freq>1),]
+      data$table<-data$table[which(data$table$BAGUE %in% bird_recapt2$Var1),]
+      
+      if(input$subsetType2 == "site" & !is.null(input$siteType)) {
+        BAGUEsite<-data$table$BAGUE[data$table$LIEUDIT %in% input$siteType]
+        data$table<-data$table[which(data$table$BAGUE %in% BAGUEsite),]
+      }
+      
+      if(input$subsetType3 == "an" & !is.null(input$anType)) {
+        BAGUEan<-data$table$BAGUE[data$table$ANNEE %in% input$anType]
+        data$table<-data$table[which(data$table$BAGUE %in% BAGUEan),]
+      }
+      
+      if (input$subsetType == "specific" & !is.null(input$spType)) {
+        data$table<-data$table[which(data$table$ESPECE %in% input$spType),]
+      }
+      png(file,
+          width = (max(data$table$lat)-min(data$table$lat))*100 ,
+          height = (max(data$table$lon)-min(data$table$lon))*100 ,
+          units = "px", pointsize = 20,
+          bg = "white", res = NA)
+      
+      print(draw.recmap(data$table, points=1, lines=1, pcol="black", lcol="red",
+                        mercator=TRUE,
+                        projection= "mercator", border= NA,
+                        bbox=c(min(data$table$lon)-5, max(data$table$lon)+5,
+                               min(data$table$lat)-5,max(data$table$lat)+5)))
+      dev.off()
+    })
+  
+  
+  url2 <- a("Korner-Nievergelt et Robinson, 2014 ", href="https://doi.org/10.1080/03078698.2014.933053")
+  output$ref <- renderUI({
+    tagList("Reference", url2)
+  })
+  
+  
 }
 
 
