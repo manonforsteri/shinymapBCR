@@ -1,8 +1,8 @@
 #
 #POUR DEPLOYER APPLICATION EN LIGNE
-# 
-setwd("~/CARTOBCR")
- rsconnect::deployApp("CARTOBCR")
+# # 
+# setwd("~/CARTOBCR")
+#  rsconnect::deployApp("CARTOBCR")
 
 
 # This is the user-interface definition of a Shiny web application. You can
@@ -69,7 +69,34 @@ ui <- dashboardPage(
       #Selection 
       tabItem(tabName = "Selection",
               h1("Selection des donnees"),
+              h4("Remplissez les filtres dans l'ordre de haut en bas"),
+              h4("Reinitialisez avec le bouton du bas a chaque nouveau tri"),
+              h3("Choix de votre site de capture"),
+              h4("Selectionnez le ou les sites sur lesquels vous pratiquez vos operations de capture"),
+              selectInput("subsetType2", "",
 
+                          c("Tous les sites" = "all",
+                            "Certains sites" = "site"),
+                          selected = "all"),
+              # which site to show
+              conditionalPanel(
+                "input.subsetType2 == 'site'",
+                uiOutput("siteTypeUi")
+              ), #br(),
+              
+              h3("Choix des annees"),
+              h4("Selectionnez la ou les annees de capture sur votre site qui vous interesse"),
+              selectInput("subsetType3", "",
+                          
+                          c("Toutes les annees" = "all",
+                            "Certaines annees" = "an"),
+                          selected = "all"),
+              # which year to show
+              conditionalPanel(
+                "input.subsetType3 == 'an'",
+                uiOutput("anTypeUi")
+              ), #br(),
+              
               h3("Choix des especes"),
               selectInput("subsetType", "",
                           
@@ -98,10 +125,14 @@ ui <- dashboardPage(
               h1("Cartographie"),
               h6("la carte va s'afficher dans quelques secondes"),
             #  h5("Rappel des parametres annee site espece"),
-              downloadButton("downloadPlot", "Telecharger carte"),
+              downloadButton("downloadPlot", "Telecharger la carte"),
+              downloadButton("downloadPlot2", "Telecharger la carte sans les frontieres"),
               fluidRow(
                 column(10,plotOutput("plotAvecR",width = "100%", height = "600px") )
               )
+      
+
+
       ),
      
        #References
@@ -110,7 +141,7 @@ ui <- dashboardPage(
                       h1("References"),
                       h5("Cette application a ete realisee Manon Ghislain"),
                       h5("Contact : manon.ghislain@mnhn.fr"),
-                      h5("La cartographie repose sur le R package birdring, Korner Nievergelt et Robinson, 2014 ")
+                      h5("La cartographie repose sur le R package birdring ", uiOutput("ref"))
                       
 
       )
