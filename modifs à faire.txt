@@ -1,0 +1,11 @@
+Petites modifs
+- ouverture uniquement des colonnes nécessaires, pas besoin d'un fichier avec toutes les colonnes
+- filtre âge
+
+Moyennes modifs
+- importation de plusieurs fichiers et fusion possible
+- importation en .xls
+- paramétrisation de la carte (épaisseur des traits, couleurs, points, précision)
+
+Grosses modifs
+- Carte à échelle locale (recoder la fonction)
